@@ -4,18 +4,24 @@ const greetingEl = document.getElementById('greeting');
 const subGreetingEl = document.getElementById('sub-greeting');
 const audio = document.getElementById('bgm');
 const musicBtn = document.getElementById('musicBtn');
+const handGuide = document.getElementById('hand-guide');
 
 // 1. Setup Canvas
+let lastWidth = window.innerWidth;
 function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    fillFrost();
+    // Only reset if width changes significantly (mobile rotate)
+    if (Math.abs(window.innerWidth - lastWidth) > 50) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        fillFrost();
+        lastWidth = window.innerWidth;
+    }
 }
 
 // 2. Initial Frost Fill
 function fillFrost() {
     ctx.globalCompositeOperation = 'source-over'; 
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.88)'; 
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.90)'; 
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
     // Add noise texture
@@ -29,18 +35,31 @@ function fillFrost() {
     }
 }
 
-// 3. Wiping Logic
+// 3. Wiping Logic (with Soft Edge & Hand Removal)
 let isDrawing = false;
-let lastX = 0;
+let lastX = 0; 
 let lastY = 0;
+
+function removeGuide() {
+    if (handGuide) {
+        handGuide.style.transition = "opacity 0.5s";
+        handGuide.style.opacity = "0";
+        setTimeout(() => { if(handGuide.parentNode) handGuide.remove(); }, 500);
+    }
+}
 
 function wipe(x, y) {
     ctx.globalCompositeOperation = 'destination-out'; 
     ctx.beginPath();
     ctx.arc(x, y, 40, 0, Math.PI * 2);
-    ctx.fill();
     
-    // Smooth line drawing
+    // Soft Ice Edge
+    ctx.shadowBlur = 20;
+    ctx.shadowColor = 'black';
+    
+    ctx.fill();
+    ctx.shadowBlur = 0; // Reset
+    
     if (isDrawing) {
         ctx.beginPath();
         ctx.moveTo(lastX, lastY);
@@ -49,74 +68,60 @@ function wipe(x, y) {
         ctx.lineCap = 'round';
         ctx.stroke();
     }
-    lastX = x;
-    lastY = y;
+    lastX = x; lastY = y;
 }
 
-// Event Listeners
-canvas.addEventListener('mousedown', (e) => { isDrawing = true; lastX = e.clientX; lastY = e.clientY; wipe(e.clientX, e.clientY); });
+// Events
+canvas.addEventListener('mousedown', (e) => { isDrawing = true; removeGuide(); lastX = e.clientX; lastY = e.clientY; wipe(e.clientX, e.clientY); });
 canvas.addEventListener('mousemove', (e) => { if (isDrawing) wipe(e.clientX, e.clientY); });
 canvas.addEventListener('mouseup', () => isDrawing = false);
 
-canvas.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    isDrawing = true;
-    lastX = e.touches[0].clientX;
-    lastY = e.touches[0].clientY;
-    wipe(lastX, lastY);
-});
-canvas.addEventListener('touchmove', (e) => {
-    e.preventDefault();
-    if (isDrawing) wipe(e.touches[0].clientX, e.touches[0].clientY);
-});
+canvas.addEventListener('touchstart', (e) => { e.preventDefault(); isDrawing = true; removeGuide(); lastX = e.touches[0].clientX; lastY = e.touches[0].clientY; wipe(lastX, lastY); });
+canvas.addEventListener('touchmove', (e) => { e.preventDefault(); if (isDrawing) wipe(e.touches[0].clientX, e.touches[0].clientY); });
 canvas.addEventListener('touchend', () => isDrawing = false);
 
-// 4. Re-freezing Effect
-function startRefreezing() {
-    setInterval(() => {
-        if (!isDrawing) {
-            ctx.globalCompositeOperation = 'source-over';
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.02)'; // Slow refreeze speed
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
-    }, 100);
-}
-
-// 5. Sound Toggle
+// 4. Sound & Share
 function toggleSound() {
     if (audio.paused) {
-        audio.play().then(() => {
-            musicBtn.textContent = "🔊 Music On";
-        }).catch(e => alert("Please interact with the page first!"));
+        audio.play().then(() => { musicBtn.textContent = "🔊 Music On"; }).catch(e => alert("Please interact with the page first!"));
     } else {
-        audio.pause();
-        musicBtn.textContent = "🔇 Music Off";
+        audio.pause(); musicBtn.textContent = "🔇 Music Off";
     }
 }
 
-// 6. Share Logic
 function loadMessage() {
     const params = new URLSearchParams(window.location.search);
     const msg = params.get('msg');
+    const from = params.get('from');
     if (msg) {
-        try {
-            greetingEl.textContent = atob(msg);
-            subGreetingEl.textContent = "A special wish for you.";
-        } catch(e) { greetingEl.textContent = msg; }
+        try { greetingEl.textContent = atob(msg); } catch(e) { greetingEl.textContent = msg; }
+        greetingEl.classList.add('special-wish');
+        if (from) {
+            const decodedFrom = atob(from);
+            const badge = document.getElementById('from-badge');
+            badge.textContent = `FROM: ${decodedFrom.toUpperCase()}`;
+            badge.style.display = 'inline-block';
+            subGreetingEl.textContent = `${decodedFrom} sent you a warm wish!`;
+            document.title = `🎁 New Wish from ${decodedFrom}!`;
+        } else {
+            subGreetingEl.textContent = "Someone sent you a special wish!";
+        }
+        const shareBtn = document.querySelector('button[onclick="shareWish()"]');
+        if(shareBtn) shareBtn.textContent = "✍️ Write Your Own";
     }
 }
 
 function shareWish() {
     const userMsg = prompt("Enter your holiday wish:");
     if (userMsg) {
+        const userName = prompt("What is your name? (Optional)");
         const encodedMsg = btoa(userMsg);
-        const newUrl = `${window.location.origin}${window.location.pathname}?msg=${encodedMsg}`;
+        let newUrl = `${window.location.origin}${window.location.pathname}?msg=${encodedMsg}`;
+        if (userName) newUrl += `&from=${btoa(userName)}`;
         navigator.clipboard.writeText(newUrl).then(() => alert("Link copied! Send it to a friend."));
     }
 }
 
-// Init
 window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-loadMessage();
-startRefreezing();
+resizeCanvas(); // Init
+loadMessage(); // Check URL
