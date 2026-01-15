@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make a Wish | Frosty Window</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container">
+        
+        <div class="snow-container">
+            <div class="snow"></div>
+            <div class="snow layer2"></div>
+            <div class="snow layer3"></div>
+        </div>
+
+        <div class="tree-scene">
+            <div class="star">★</div>
+            <div class="tree">
+                <div class="layer layer-top"></div>
+                <div class="layer layer-middle"></div>
+                <div class="layer layer-bottom"></div>
+            </div>
+            <div class="trunk"></div>
+            <div class="snow-ground"></div>
+        </div>
+
+        <div id="message-box">
+            <h1 id="greeting">Merry Christmas!</h1>
+            <p id="sub-greeting">Wipe the window to see inside...</p>
+        </div>
+    </div>
+
+    <canvas id="frostCanvas"></canvas>
+
+    <div class="controls">
+        <button onclick="toggleSound()" id="musicBtn">🔇 Music Off</button>
+        <button onclick="shareWish()">🔗 Share Wish</button>
+    </div>
+
+    <audio id="bgm" loop>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
