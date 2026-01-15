@@ -4,41 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Make a Wish | Frosty Window</title>
+    <meta property="og:title" content="A Special Holiday Wish for You">
+    <meta property="og:description" content="Wipe the frosty window to reveal your surprise message.">
+    <meta name="theme-color" content="#090a0f">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎄</text></svg>">
+    
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <div class="container">
-        
         <div class="snow-container">
             <div class="snow"></div>
             <div class="snow layer2"></div>
-            <div class="snow layer3"></div>
         </div>
 
         <div class="tree-scene">
             <div class="star">★</div>
-            <div class="tree">
-                <div class="layer layer-top"></div>
-                <div class="layer layer-middle"></div>
-                <div class="layer layer-bottom"></div>
+            <div class="tree-stack">
+                <div class="tree-layer top-layer">
+                    <div class="light red pos-1"></div>
+                    <div class="light gold pos-2"></div>
+                </div>
+                <div class="tree-layer middle-layer">
+                    <div class="light blue pos-1"></div>
+                    <div class="light red pos-2"></div>
+                    <div class="light gold pos-3"></div>
+                </div>
+                <div class="tree-layer bottom-layer">
+                    <div class="light gold pos-1"></div>
+                    <div class="light blue pos-2"></div>
+                    <div class="light red pos-3"></div>
+                    <div class="light gold pos-4"></div>
+                </div>
             </div>
             <div class="trunk"></div>
             <div class="snow-ground"></div>
         </div>
 
         <div id="message-box">
+            <div id="from-badge" style="display: none;">FROM</div>
             <h1 id="greeting">Merry Christmas!</h1>
             <p id="sub-greeting">Wipe the window to see inside...</p>
         </div>
     </div>
 
     <canvas id="frostCanvas"></canvas>
+    
+    <div id="hand-guide">👆</div>
 
     <div class="controls">
         <button onclick="toggleSound()" id="musicBtn">🔇 Music Off</button>
         <button onclick="shareWish()">🔗 Share Wish</button>
+        <button onclick="fillFrost()">❄️ Freeze</button>
     </div>
 
     <audio id="bgm" loop>
