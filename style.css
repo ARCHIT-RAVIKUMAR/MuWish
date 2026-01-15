@@ -10,7 +10,7 @@ body { height: 100vh; width: 100vw; overflow: hidden; background-color: #090a0f;
 @keyframes snowAnim { from { transform: translateY(0); } to { transform: translateY(650px); } }
 
 /* --- Tree & Ornaments --- */
-.tree-scene { position: absolute; bottom: 15%; display: flex; flex-direction: column; align-items: center; transform: scale(1.5); z-index: 2; }
+.tree-scene { position: absolute; bottom: 10%; display: flex; flex-direction: column; align-items: center; transform: scale(1.5); z-index: 2; }
 .star { font-size: 2.5rem; color: #ffd700; text-shadow: 0 0 10px #ffd700, 0 0 20px #ff8c00; animation: glow 1.5s infinite alternate; z-index: 10; margin-bottom: -18px; position: relative; }
 .tree-stack { display: flex; flex-direction: column; align-items: center; }
 .tree-layer { width: 0; height: 0; border-style: solid; border-color: transparent transparent #0f5e2f transparent; position: relative; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.3)); }
@@ -30,25 +30,26 @@ body { height: 100vh; width: 100vw; overflow: hidden; background-color: #090a0f;
 .gold { background: #ffd700; box-shadow: 0 0 5px #ffd700; animation-delay: 0.5s; }
 .blue { background: #00ffff; box-shadow: 0 0 5px #00ffff; animation-delay: 0.8s; }
 
-/* Ornament Positions (Adjusted for triangles) */
-.top-layer .pos-1 { top: 30px; left: -10px; }
-.top-layer .pos-2 { top: 40px; left: 15px; }
-.middle-layer .pos-1 { top: 35px; left: -20px; }
-.middle-layer .pos-2 { top: 50px; left: 0px; }
-.middle-layer .pos-3 { top: 45px; left: 25px; }
-.bottom-layer .pos-1 { top: 40px; left: -30px; }
-.bottom-layer .pos-2 { top: 60px; left: -10px; }
-.bottom-layer .pos-3 { top: 50px; left: 20px; }
-.bottom-layer .pos-4 { top: 70px; left: 40px; }
-
+/* Ornament Positions */
+.top-layer .pos-1 { top: 30px; left: -10px; } .top-layer .pos-2 { top: 40px; left: 15px; }
+.middle-layer .pos-1 { top: 35px; left: -20px; } .middle-layer .pos-2 { top: 50px; left: 0px; } .middle-layer .pos-3 { top: 45px; left: 25px; }
+.bottom-layer .pos-1 { top: 40px; left: -30px; } .bottom-layer .pos-2 { top: 60px; left: -10px; } .bottom-layer .pos-3 { top: 50px; left: 20px; } .bottom-layer .pos-4 { top: 70px; left: 40px; }
 @keyframes twinkle { from { opacity: 0.4; transform: scale(0.8); } to { opacity: 1; transform: scale(1.2); } }
 
 .trunk { width: 26px; height: 40px; background: #3E2723; margin-top: -5px; z-index: 0; border-radius: 2px; }
 .snow-ground { position: absolute; bottom: -50px; width: 800px; height: 120px; background: radial-gradient(circle, #fff 20%, #ddeeff 100%); border-radius: 50%; box-shadow: 0 0 30px rgba(255,255,255,0.2); z-index: -1; }
 @keyframes glow { from { text-shadow: 0 0 10px #ffd700, 0 0 20px #ff8c00; transform: scale(1); } to { text-shadow: 0 0 20px #ffd700, 0 0 40px #ff4500; transform: scale(1.1); } }
 
-/* --- Message Box --- */
-#message-box { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #fff; z-index: 5; width: 90%; max-width: 600px; padding: 40px; pointer-events: none; }
+/* --- Message Box (FIXED) --- */
+#message-box { 
+    position: absolute; 
+    top: 40%; /* Moved up */ 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    text-align: center; color: #fff; z-index: 5; 
+    width: 90%; max-width: 600px; padding: 40px; pointer-events: none;
+    background: radial-gradient(circle, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 80%); /* Readable BG */
+}
 #greeting { font-family: 'Great Vibes', cursive; font-size: 5rem; background: linear-gradient(to bottom, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 0px rgba(0,0,0,0.5)); margin-bottom: 10px; line-height: 1.2; }
 #sub-greeting { font-size: 1.5rem; margin-top: 10px; font-weight: 700; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
 #from-badge { font-family: 'Montserrat', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 2px; background: rgba(0, 0, 0, 0.5); border: 1px solid #ffd700; color: #ffd700; padding: 5px 15px; border-radius: 20px; display: inline-block; margin-bottom: 15px; box-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
